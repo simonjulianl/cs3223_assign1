@@ -204,6 +204,8 @@ have_free_buffer(void)
 void
 StrategyUpdateAccessedBuffer(int buf_id, bool delete)
 {
+    SpinLockAcquire(&StrategyControl->buffer_strategy_lock);
+
     // Buffer id is already in lruBuffers, we just need to move it to the head
     int i, index = -1;
     for(i = 0; i < StrategyControl->headLruPointer; i++) {
@@ -214,6 +216,7 @@ StrategyUpdateAccessedBuffer(int buf_id, bool delete)
     }
 
     if (delete && index == -1) {
+        SpinLockRelease(&StrategyControl->buffer_strategy_lock);
         elog(ERROR, "deleting an unexisting buffer %d", buf_id);
     }
 
@@ -223,6 +226,7 @@ StrategyUpdateAccessedBuffer(int buf_id, bool delete)
 
         StrategyControl->lruBuffers[StrategyControl->headLruPointer] = buf_id;
         StrategyControl->headLruPointer++;
+        SpinLockRelease(&StrategyControl->buffer_strategy_lock);
         return;
     }
 
@@ -237,6 +241,8 @@ StrategyUpdateAccessedBuffer(int buf_id, bool delete)
     } else {
         StrategyControl->lruBuffers[StrategyControl->headLruPointer - 1] = buf_id;
     }
+
+    SpinLockRelease(&StrategyControl->buffer_strategy_lock);
 }
 
 
