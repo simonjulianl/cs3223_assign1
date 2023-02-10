@@ -1,0 +1,20 @@
+2023-02-10 09:01:53.239 +08 [353146] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
+2023-02-10 09:01:53.239 +08 [353146] LOG:  listening on IPv4 address "127.0.0.1", port 5001
+2023-02-10 09:01:53.252 +08 [353146] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
+2023-02-10 09:01:53.262 +08 [353149] LOG:  database system was shut down at 2023-02-10 09:01:50 +08
+2023-02-10 09:01:53.272 +08 [353146] LOG:  database system is ready to accept connections
+2023-02-10 09:02:01.941 +08 [353194] ERROR:  index "movies_pkey1" contains unexpected zero page at block 6
+2023-02-10 09:02:01.941 +08 [353194] HINT:  Please REINDEX it.
+2023-02-10 09:02:01.941 +08 [353194] STATEMENT:  SELECT COUNT(*) FROM movies;
+2023-02-10 09:03:34.984 +08 [353146] LOG:  received fast shutdown request
+2023-02-10 09:03:34.997 +08 [353146] LOG:  aborting any active transactions
+2023-02-10 09:03:34.998 +08 [353146] LOG:  background worker "logical replication launcher" (PID 353152) exited with exit code 1
+2023-02-10 09:03:34.998 +08 [353147] LOG:  shutting down
+2023-02-10 09:03:35.018 +08 [353147] LOG:  checkpoint starting: shutdown immediate
+2023-02-10 09:03:35.094 +08 [353147] LOG:  checkpoint complete: wrote 16 buffers (100.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.038 s, total=0.096 s; sync files=34, longest=0.006 s, average=0.002 s; distance=621 kB, estimate=621 kB
+2023-02-10 09:03:35.097 +08 [353146] LOG:  database system is shut down
+2023-02-10 09:03:37.340 +08 [354313] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
+2023-02-10 09:03:37.340 +08 [354313] LOG:  listening on IPv4 address "127.0.0.1", port 5001
+2023-02-10 09:03:37.356 +08 [354313] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
+2023-02-10 09:03:37.367 +08 [354316] LOG:  database system was shut down at 2023-02-10 09:03:35 +08
+2023-02-10 09:03:37.374 +08 [354313] LOG:  database system is ready to accept connections

@@ -25,6 +25,7 @@ copyclock:
 	cp freelist.original.c $(SRC_DIR)/src/backend/storage/buffer/freelist.c
 	cp bufmgr.original.c $(SRC_DIR)/src/backend/storage/buffer/bufmgr.c
 
+# error regarding utils/errcodes.h => https://stackoverflow.com/questions/68379786/building-postgres-from-source-throws-utils-errcodes-h-file-not-found-when-ca
 pgsql:
-	cd $(SRC_DIR) && make && make install
+	unset MAKELEVEL && unset MAKEFLAGS && unset MFLAGS && cd $(SRC_DIR) && make && make install
 
