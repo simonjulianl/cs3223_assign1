@@ -29,3 +29,10 @@ copyclock:
 pgsql:
 	unset MAKELEVEL && unset MAKEFLAGS && unset MFLAGS && cd $(SRC_DIR) && make && make install
 
+compare: SHELL := /bin/bash
+compare:
+	for i in {1..9}; \
+	do \
+		diff "testresults/result-$${i}.txt" "testresults-lru-soln/result-$${i}.txt"; \
+	done
+

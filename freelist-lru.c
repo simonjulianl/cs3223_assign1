@@ -30,6 +30,7 @@ typedef struct
 {
 	/* Spinlock: protects the values below */
 	slock_t		buffer_strategy_lock;
+    slock_t     lru_buffer_strategy_lock;
 
 	/*
 	 * Clock sweep hand: index of next buffer to consider grabbing. Note that
@@ -204,7 +205,7 @@ have_free_buffer(void)
 void
 StrategyUpdateAccessedBuffer(int buf_id, bool delete)
 {
-    SpinLockAcquire(&StrategyControl->buffer_strategy_lock);
+    SpinLockAcquire(&StrategyControl->lru_buffer_strategy_lock);
 
     // Buffer id is already in lruBuffers, we just need to move it to the head
     int i, index = -1;
@@ -216,7 +217,7 @@ StrategyUpdateAccessedBuffer(int buf_id, bool delete)
     }
 
     if (delete && index == -1) {
-        SpinLockRelease(&StrategyControl->buffer_strategy_lock);
+        SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
         elog(ERROR, "deleting an unexisting buffer %d", buf_id);
     }
 
@@ -226,7 +227,7 @@ StrategyUpdateAccessedBuffer(int buf_id, bool delete)
 
         StrategyControl->lruBuffers[StrategyControl->headLruPointer] = buf_id;
         StrategyControl->headLruPointer++;
-        SpinLockRelease(&StrategyControl->buffer_strategy_lock);
+        SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
         return;
     }
 
@@ -242,7 +243,7 @@ StrategyUpdateAccessedBuffer(int buf_id, bool delete)
         StrategyControl->lruBuffers[StrategyControl->headLruPointer - 1] = buf_id;
     }
 
-    SpinLockRelease(&StrategyControl->buffer_strategy_lock);
+    SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
 }
 
 
@@ -380,7 +381,7 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state)
 	for (int i = 0; i < NBuffers; i++) // traverse from tail to head
 	{
 		// buf = GetBufferDescriptor(ClockSweepTick());
-        buf = GetBufferDescriptor(i);
+        buf = GetBufferDescriptor(StrategyControl->lruBuffers[i]);
 
 		/*
 		 * If the buffer is pinned, it cannot be used; keep scanning.
@@ -568,6 +569,7 @@ StrategyInitialize(bool init)
 		Assert(init);
 
 		SpinLockInit(&StrategyControl->buffer_strategy_lock);
+        SpinLockInit(&StrategyControl->lru_buffer_strategy_lock);
 
 		/*
 		 * Grab the whole linked list of free buffers for our strategy. We

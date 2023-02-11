@@ -1,73 +1,69 @@
-2023-02-10 09:01:53.239 +08 [353146] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
-2023-02-10 09:01:53.239 +08 [353146] LOG:  listening on IPv4 address "127.0.0.1", port 5001
-2023-02-10 09:01:53.252 +08 [353146] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
-2023-02-10 09:01:53.262 +08 [353149] LOG:  database system was shut down at 2023-02-10 09:01:50 +08
-2023-02-10 09:01:53.272 +08 [353146] LOG:  database system is ready to accept connections
-2023-02-10 09:02:01.941 +08 [353194] ERROR:  index "movies_pkey1" contains unexpected zero page at block 6
-2023-02-10 09:02:01.941 +08 [353194] HINT:  Please REINDEX it.
-2023-02-10 09:02:01.941 +08 [353194] STATEMENT:  SELECT COUNT(*) FROM movies;
-2023-02-10 09:03:34.984 +08 [353146] LOG:  received fast shutdown request
-2023-02-10 09:03:34.997 +08 [353146] LOG:  aborting any active transactions
-2023-02-10 09:03:34.998 +08 [353146] LOG:  background worker "logical replication launcher" (PID 353152) exited with exit code 1
-2023-02-10 09:03:34.998 +08 [353147] LOG:  shutting down
-2023-02-10 09:03:35.018 +08 [353147] LOG:  checkpoint starting: shutdown immediate
-2023-02-10 09:03:35.094 +08 [353147] LOG:  checkpoint complete: wrote 16 buffers (100.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.038 s, total=0.096 s; sync files=34, longest=0.006 s, average=0.002 s; distance=621 kB, estimate=621 kB
-2023-02-10 09:03:35.097 +08 [353146] LOG:  database system is shut down
-2023-02-10 09:03:37.340 +08 [354313] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
-2023-02-10 09:03:37.340 +08 [354313] LOG:  listening on IPv4 address "127.0.0.1", port 5001
-2023-02-10 09:03:37.356 +08 [354313] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
-2023-02-10 09:03:37.367 +08 [354316] LOG:  database system was shut down at 2023-02-10 09:03:35 +08
-2023-02-10 09:03:37.374 +08 [354313] LOG:  database system is ready to accept connections
-2023-02-10 09:08:37.658 +08 [354314] LOG:  checkpoint starting: time
-2023-02-10 09:08:39.177 +08 [354314] LOG:  checkpoint complete: wrote 16 buffers (100.0%); 1 WAL file(s) added, 0 removed, 0 recycled; write=1.313 s, sync=0.022 s, total=1.519 s; sync files=33, longest=0.011 s, average=0.001 s; distance=616 kB, estimate=616 kB
-2023-02-10 09:25:42.171 +08 [354313] LOG:  received fast shutdown request
-2023-02-10 09:25:42.176 +08 [354313] LOG:  aborting any active transactions
-2023-02-10 09:25:42.176 +08 [354313] LOG:  background worker "logical replication launcher" (PID 354319) exited with exit code 1
-2023-02-10 09:25:42.176 +08 [354314] LOG:  shutting down
-2023-02-10 09:25:42.183 +08 [354314] LOG:  checkpoint starting: shutdown immediate
-2023-02-10 09:25:42.210 +08 [354314] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.034 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=555 kB
-2023-02-10 09:25:42.212 +08 [354313] LOG:  database system is shut down
-2023-02-10 09:25:45.442 +08 [356553] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
-2023-02-10 09:25:45.443 +08 [356553] LOG:  listening on IPv4 address "127.0.0.1", port 5001
-2023-02-10 09:25:45.456 +08 [356553] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
-2023-02-10 09:25:45.467 +08 [356556] LOG:  database system was shut down at 2023-02-10 09:25:42 +08
-2023-02-10 09:25:45.475 +08 [356553] LOG:  database system is ready to accept connections
-2023-02-10 09:28:12.083 +08 [356607] PANIC:  stuck spinlock detected at StrategyUpdateAccessedBuffer, freelist.c:207
-2023-02-10 09:28:12.083 +08 [356607] STATEMENT:  SELECT test_bufmgr('movies', 0);
-2023-02-10 09:28:12.155 +08 [356553] LOG:  server process (PID 356607) was terminated by signal 6: Aborted
-2023-02-10 09:28:12.155 +08 [356553] DETAIL:  Failed process was running: SELECT test_bufmgr('movies', 0);
-2023-02-10 09:28:12.155 +08 [356553] LOG:  terminating any other active server processes
-2023-02-10 09:28:12.156 +08 [356553] LOG:  all server processes terminated; reinitializing
-2023-02-10 09:28:12.172 +08 [356717] LOG:  database system was interrupted; last known up at 2023-02-10 09:25:45 +08
-2023-02-10 09:28:12.172 +08 [356720] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.174 +08 [356722] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.176 +08 [356724] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.177 +08 [356726] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.178 +08 [356728] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.180 +08 [356730] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.181 +08 [356732] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.182 +08 [356734] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.183 +08 [356736] FATAL:  the database system is in recovery mode
-2023-02-10 09:28:12.254 +08 [356717] LOG:  database system was not properly shut down; automatic recovery in progress
-2023-02-10 09:28:12.260 +08 [356717] LOG:  redo starts at 0/1C7FD70
-2023-02-10 09:28:12.264 +08 [356717] LOG:  invalid record length at 0/1D13470: wanted 24, got 0
-2023-02-10 09:28:12.264 +08 [356717] LOG:  redo done at 0/1D13448 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
-2023-02-10 09:28:12.274 +08 [356718] LOG:  checkpoint starting: end-of-recovery immediate wait
-2023-02-10 09:28:12.370 +08 [356718] LOG:  checkpoint complete: wrote 19 buffers (118.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.068 s, total=0.101 s; sync files=34, longest=0.006 s, average=0.002 s; distance=589 kB, estimate=589 kB
-2023-02-10 09:28:12.377 +08 [356553] LOG:  database system is ready to accept connections
-2023-02-10 09:30:37.242 +08 [356791] PANIC:  stuck spinlock detected at StrategyUpdateAccessedBuffer, freelist.c:207
-2023-02-10 09:30:37.242 +08 [356791] STATEMENT:  SELECT test_bufmgr('movies', 0);
-2023-02-10 09:30:37.242 +08 [356791] LOG:  could not send data to client: Broken pipe
-2023-02-10 09:30:37.242 +08 [356791] STATEMENT:  SELECT test_bufmgr('movies', 0);
-2023-02-10 09:30:37.242 +08 [356791] PANIC:  canceling statement due to user request
-2023-02-10 09:30:37.312 +08 [356553] LOG:  server process (PID 356791) was terminated by signal 6: Aborted
-2023-02-10 09:30:37.312 +08 [356553] DETAIL:  Failed process was running: SELECT test_bufmgr('movies', 0);
-2023-02-10 09:30:37.312 +08 [356553] LOG:  terminating any other active server processes
-2023-02-10 09:30:37.312 +08 [356553] LOG:  all server processes terminated; reinitializing
-2023-02-10 09:30:37.330 +08 [357041] LOG:  database system was interrupted; last known up at 2023-02-10 09:28:12 +08
-2023-02-10 09:30:37.383 +08 [357041] LOG:  database system was not properly shut down; automatic recovery in progress
-2023-02-10 09:30:37.388 +08 [357041] LOG:  invalid record length at 0/1D134E8: wanted 24, got 0
-2023-02-10 09:30:37.388 +08 [357041] LOG:  redo is not required
-2023-02-10 09:30:37.397 +08 [357042] LOG:  checkpoint starting: end-of-recovery immediate wait
-2023-02-10 09:30:37.428 +08 [357042] LOG:  checkpoint complete: wrote 3 buffers (18.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.004 s, total=0.035 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
-2023-02-10 09:30:37.433 +08 [356553] LOG:  database system is ready to accept connections
+2023-02-11 10:44:47.075 +08 [397910] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
+2023-02-11 10:44:47.075 +08 [397910] LOG:  listening on IPv4 address "127.0.0.1", port 5001
+2023-02-11 10:44:47.087 +08 [397910] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
+2023-02-11 10:44:47.100 +08 [397913] LOG:  database system was shut down at 2023-02-11 10:44:22 +08
+2023-02-11 10:44:47.108 +08 [397910] LOG:  database system is ready to accept connections
+2023-02-11 10:49:47.102 +08 [397911] LOG:  checkpoint starting: time
+2023-02-11 10:49:47.149 +08 [397911] LOG:  checkpoint complete: wrote 3 buffers (18.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.005 s, total=0.047 s; sync files=2, longest=0.003 s, average=0.003 s; distance=0 kB, estimate=0 kB
+2023-02-11 10:54:50.181 +08 [397910] LOG:  received fast shutdown request
+2023-02-11 10:54:50.194 +08 [397910] LOG:  aborting any active transactions
+2023-02-11 10:54:50.194 +08 [397910] LOG:  background worker "logical replication launcher" (PID 397916) exited with exit code 1
+2023-02-11 10:54:50.194 +08 [397911] LOG:  shutting down
+2023-02-11 10:54:50.205 +08 [397911] LOG:  checkpoint starting: shutdown immediate
+2023-02-11 10:54:50.231 +08 [397911] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.037 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB
+2023-02-11 10:54:50.232 +08 [397910] LOG:  database system is shut down
+2023-02-11 10:55:00.932 +08 [399978] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
+2023-02-11 10:55:00.932 +08 [399978] LOG:  listening on IPv4 address "127.0.0.1", port 5001
+2023-02-11 10:55:00.945 +08 [399978] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
+2023-02-11 10:55:00.955 +08 [399982] LOG:  database system was shut down at 2023-02-11 10:54:58 +08
+2023-02-11 10:55:00.962 +08 [399978] LOG:  database system is ready to accept connections
+2023-02-11 10:58:43.648 +08 [399978] LOG:  received fast shutdown request
+2023-02-11 10:58:43.668 +08 [399978] LOG:  aborting any active transactions
+2023-02-11 10:58:43.668 +08 [399978] LOG:  background worker "logical replication launcher" (PID 399985) exited with exit code 1
+2023-02-11 10:58:43.668 +08 [399980] LOG:  shutting down
+2023-02-11 10:58:43.676 +08 [399980] LOG:  checkpoint starting: shutdown immediate
+2023-02-11 10:58:43.717 +08 [399980] LOG:  checkpoint complete: wrote 3 buffers (18.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.004 s, total=0.049 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2023-02-11 10:58:43.719 +08 [399978] LOG:  database system is shut down
+2023-02-11 10:58:47.990 +08 [400349] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
+2023-02-11 10:58:47.990 +08 [400349] LOG:  listening on IPv4 address "127.0.0.1", port 5001
+2023-02-11 10:58:47.999 +08 [400349] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
+2023-02-11 10:58:48.009 +08 [400352] LOG:  database system was shut down at 2023-02-11 10:58:43 +08
+2023-02-11 10:58:48.015 +08 [400349] LOG:  database system is ready to accept connections
+2023-02-11 10:59:40.415 +08 [400349] LOG:  received fast shutdown request
+2023-02-11 10:59:40.429 +08 [400349] LOG:  aborting any active transactions
+2023-02-11 10:59:40.430 +08 [400349] LOG:  background worker "logical replication launcher" (PID 400355) exited with exit code 1
+2023-02-11 10:59:40.430 +08 [400350] LOG:  shutting down
+2023-02-11 10:59:40.438 +08 [400350] LOG:  checkpoint starting: shutdown immediate
+2023-02-11 10:59:40.480 +08 [400350] LOG:  checkpoint complete: wrote 3 buffers (18.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.005 s, total=0.050 s; sync files=2, longest=0.003 s, average=0.003 s; distance=0 kB, estimate=0 kB
+2023-02-11 10:59:40.482 +08 [400349] LOG:  database system is shut down
+2023-02-11 10:59:45.868 +08 [402112] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
+2023-02-11 10:59:45.868 +08 [402112] LOG:  listening on IPv4 address "127.0.0.1", port 5001
+2023-02-11 10:59:45.881 +08 [402112] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
+2023-02-11 10:59:45.890 +08 [402115] LOG:  database system was shut down at 2023-02-11 10:59:40 +08
+2023-02-11 10:59:45.896 +08 [402112] LOG:  database system is ready to accept connections
+2023-02-11 11:00:53.954 +08 [402112] LOG:  received fast shutdown request
+2023-02-11 11:00:53.970 +08 [402112] LOG:  aborting any active transactions
+2023-02-11 11:00:53.971 +08 [402112] LOG:  background worker "logical replication launcher" (PID 402118) exited with exit code 1
+2023-02-11 11:00:53.971 +08 [402113] LOG:  shutting down
+2023-02-11 11:00:53.978 +08 [402113] LOG:  checkpoint starting: shutdown immediate
+2023-02-11 11:00:54.015 +08 [402113] LOG:  checkpoint complete: wrote 3 buffers (18.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.004 s, total=0.045 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2023-02-11 11:00:54.018 +08 [402112] LOG:  database system is shut down
+2023-02-11 11:00:58.772 +08 [402236] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
+2023-02-11 11:00:58.772 +08 [402236] LOG:  listening on IPv4 address "127.0.0.1", port 5001
+2023-02-11 11:00:58.784 +08 [402236] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
+2023-02-11 11:00:58.795 +08 [402239] LOG:  database system was shut down at 2023-02-11 11:00:54 +08
+2023-02-11 11:00:58.802 +08 [402236] LOG:  database system is ready to accept connections
+2023-02-11 11:03:26.848 +08 [402236] LOG:  received fast shutdown request
+2023-02-11 11:03:26.861 +08 [402236] LOG:  aborting any active transactions
+2023-02-11 11:03:26.862 +08 [402236] LOG:  background worker "logical replication launcher" (PID 402242) exited with exit code 1
+2023-02-11 11:03:26.862 +08 [402237] LOG:  shutting down
+2023-02-11 11:03:26.869 +08 [402237] LOG:  checkpoint starting: shutdown immediate
+2023-02-11 11:03:26.908 +08 [402237] LOG:  checkpoint complete: wrote 3 buffers (18.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.004 s, total=0.046 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2023-02-11 11:03:26.909 +08 [402236] LOG:  database system is shut down
+2023-02-11 11:03:29.290 +08 [403524] LOG:  starting PostgreSQL 15.0 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, 64-bit
+2023-02-11 11:03:29.290 +08 [403524] LOG:  listening on IPv4 address "127.0.0.1", port 5001
+2023-02-11 11:03:29.310 +08 [403524] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5001"
+2023-02-11 11:03:29.321 +08 [403527] LOG:  database system was shut down at 2023-02-11 11:03:26 +08
+2023-02-11 11:03:29.329 +08 [403524] LOG:  database system is ready to accept connections
+2023-02-11 11:08:29.407 +08 [403525] LOG:  checkpoint starting: time
+2023-02-11 11:08:29.452 +08 [403525] LOG:  checkpoint complete: wrote 3 buffers (18.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.005 s, total=0.045 s; sync files=3, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB
