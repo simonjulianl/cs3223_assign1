@@ -1,0 +1,29 @@
+ shared_buffers 
+----------------
+ 64MB
+(1 row)
+
+
+Sat 11 Feb 2023 11:23:56 AM +08
+
+pgbench (15.0)
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 4
+query mode: simple
+number of clients: 10
+number of threads: 10
+maximum number of tries: 1
+duration: 360 s
+number of transactions actually processed: 2022325
+number of failed transactions: 0 (0.000%)
+latency average = 1.780 ms
+initial connection time = 5.060 ms
+tps = 5617.616071 (without initial connection time)
+
+Sat 11 Feb 2023 11:29:56 AM +08
+
+ heap_read | heap_hit |       hit_ratio        
+-----------+----------+------------------------
+     84170 | 31090821 | 0.99730007941301410480
+(1 row)
+
