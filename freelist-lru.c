@@ -30,7 +30,7 @@ typedef struct
 {
 	/* Spinlock: protects the values below */
 	slock_t		buffer_strategy_lock;
-    slock_t     lru_buffer_strategy_lock;
+	slock_t		lru_buffer_strategy_lock;
 
 	/*
 	 * Clock sweep hand: index of next buffer to consider grabbing. Note that
@@ -39,13 +39,8 @@ typedef struct
 	 */
 	pg_atomic_uint32 nextVictimBuffer;
 
-    /*
-     * For LRU. It is easier to be implemented using array of int.
-     * The structure of the stack looks like T [...] H where T is the tail and H is the head. Hence, the tail is
-     * always at index 0.
-     */
-    int*        lruBuffers; // NBuffers size
-    int         headLruPointer;
+	int* buffers;
+	int headPtr;
 
 	int			firstFreeBuffer;	/* Head of list of unused buffers */
 	int			lastFreeBuffer; /* Tail of list of unused buffers */
@@ -205,45 +200,43 @@ have_free_buffer(void)
 void
 StrategyUpdateAccessedBuffer(int buf_id, bool delete)
 {
-    SpinLockAcquire(&StrategyControl->lru_buffer_strategy_lock);
+	// elog(ERROR, "StrategyUpdateAccessedBuffer: Not implemented!");
+	int index = -1;
+	SpinLockAcquire(&StrategyControl->lru_buffer_strategy_lock);
+	for(int i = 0 ; i < StrategyControl->headPtr; i++) {
+		if(StrategyControl->buffers[i] == buf_id) {
+			index = i;
+			break;
+		}
+	}
 
-    // Buffer id is already in lruBuffers, we just need to move it to the head
-    int i, index = -1;
-    for(i = 0; i < StrategyControl->headLruPointer; i++) {
-        if (StrategyControl->lruBuffers[i] == buf_id) {
-            index = i;
-            break;
-        }
-    }
+	if (delete) {
+		if (index == -1) {
+			SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
+			elog(ERROR, "Buffer id does not exist");
+		}
 
-    if (delete && index == -1) {
-        SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
-        elog(ERROR, "deleting an unexisting buffer %d", buf_id);
-    }
+		for(int i = index; i < StrategyControl->headPtr - 1; i++) {
+			StrategyControl->buffers[i] = StrategyControl->buffers[i + 1];
+		}
+		StrategyControl->headPtr--;
+		SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
+		return;
+	}
 
-    // inserting a new buffer id, caller is responsible to not insert a new id beyond the NBuffers capacity
-    if (index == -1) {
-        Assert(StrategyControl->headLruPointer < NBuffers);
+	if (index == -1) {
+		StrategyControl->buffers[StrategyControl->headPtr] = buf_id;
+		StrategyControl->headPtr++;
+		SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
+		return;
+	} else {
+		for(int i = index; i < StrategyControl->headPtr - 1; i++) {
+			StrategyControl->buffers[i] = StrategyControl->buffers[i + 1];
+		}
+		StrategyControl->buffers[StrategyControl->headPtr - 1] = buf_id;
+		SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
+	}
 
-        StrategyControl->lruBuffers[StrategyControl->headLruPointer] = buf_id;
-        StrategyControl->headLruPointer++;
-        SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
-        return;
-    }
-
-    // Moving an item to the top of the stack or deleting an item
-    // Shift every item by one to the left
-    for(i = index; i < StrategyControl->headLruPointer - 1; i++) {
-        StrategyControl->lruBuffers[i] = StrategyControl->lruBuffers[i + 1];
-    }
-
-    if (delete) {
-        StrategyControl->headLruPointer--;
-    } else {
-        StrategyControl->lruBuffers[StrategyControl->headLruPointer - 1] = buf_id;
-    }
-
-    SpinLockRelease(&StrategyControl->lru_buffer_strategy_lock);
 }
 
 
@@ -265,7 +258,7 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state)
 {
 	BufferDesc *buf;
 	int			bgwprocno;
-	// int			trycounter; -- This is only used for clock algorithm
+	//int			trycounter;
 	uint32		local_buf_state;	/* to avoid repeated (de-)referencing */
 
 	/*
@@ -362,14 +355,12 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state)
 			 * of 8.3, but we'd better check anyway.)
 			 */
 			local_buf_state = LockBufHdr(buf);
-
-            // usage count is only used for clock replacement algorithm
 			if (BUF_STATE_GET_REFCOUNT(local_buf_state) == 0)
 			{
 				if (strategy != NULL)
 					AddBufferToRing(strategy, buf);
 				*buf_state = local_buf_state;
-                StrategyUpdateAccessedBuffer(buf->buf_id, false);
+				StrategyUpdateAccessedBuffer(buf->buf_id, false);
 				return buf;
 			}
 			UnlockBufHdr(buf, local_buf_state);
@@ -377,26 +368,25 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state)
 	}
 
 	/* Nothing on the freelist, so run the "LRU" algorithm */
-	// trycounter = NBuffers; -- only used in sweep algorithm
-	for (int i = 0; i < NBuffers; i++) // traverse from tail to head
+	//trycounter = NBuffers;
+	for (int i = 0; i < NBuffers; i++)
 	{
-		// buf = GetBufferDescriptor(ClockSweepTick());
-        buf = GetBufferDescriptor(StrategyControl->lruBuffers[i]);
+		buf = GetBufferDescriptor(StrategyControl->buffers[i]);
 
 		/*
-		 * If the buffer is pinned, it cannot be used; keep scanning.
+		 * If the buffer is pinned or has a nonzero usage_count, we cannot use
+		 * it; decrement the usage_count (unless pinned) and keep scanning.
 		 */
 		local_buf_state = LockBufHdr(buf);
 
-        // Note: usage count is only used for clock algorithm
 		if (BUF_STATE_GET_REFCOUNT(local_buf_state) == 0)
 		{
-            /* Found a usable buffer */
-            if (strategy != NULL)
-                AddBufferToRing(strategy, buf);
-            *buf_state = local_buf_state;
-            StrategyUpdateAccessedBuffer(buf->buf_id, false);
-            return buf;
+			/* Found a usable buffer */
+			if (strategy != NULL)
+				AddBufferToRing(strategy, buf);
+			*buf_state = local_buf_state;
+			StrategyUpdateAccessedBuffer(buf->buf_id, false);
+			return buf;
 		}
 		else if (i == NBuffers - 1)
 		{
@@ -412,6 +402,7 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state)
 		}
 		UnlockBufHdr(buf, local_buf_state);
 	}
+	elog(ERROR, "no unpinned buffers available");
 }
 
 /*
@@ -432,9 +423,7 @@ StrategyFreeBuffer(BufferDesc *buf)
 		if (buf->freeNext < 0)
 			StrategyControl->lastFreeBuffer = buf->buf_id;
 		StrategyControl->firstFreeBuffer = buf->buf_id;
-
-        // Remove the buffer id from the lru buffers
-        StrategyUpdateAccessedBuffer(buf->buf_id, true);
+		StrategyUpdateAccessedBuffer(buf->buf_id, true);
 	}
 
 	SpinLockRelease(&StrategyControl->buffer_strategy_lock);
@@ -521,8 +510,7 @@ StrategyShmemSize(void)
 	/* size of the shared replacement strategy control block */
 	size = add_size(size, MAXALIGN(sizeof(BufferStrategyControl)));
 
-    /* size of the lru buffers */
-    size = add_size(size, sizeof(int) * NBuffers);
+	size = add_size(size, NBuffers * sizeof(int));
 
 	return size;
 }
@@ -559,7 +547,10 @@ StrategyInitialize(bool init)
 						sizeof(BufferStrategyControl),
 						&found);
 
-    StrategyControl->lruBuffers = (int *) ShmemInitStruct("LRU Buffer Stack", sizeof(int) * NBuffers, &found);
+	StrategyControl->buffers = (int*)
+		ShmemInitStruct("Buffer Array",
+						sizeof(int) * NBuffers,
+						&found);
 
 	if (!found)
 	{
@@ -569,23 +560,20 @@ StrategyInitialize(bool init)
 		Assert(init);
 
 		SpinLockInit(&StrategyControl->buffer_strategy_lock);
-        SpinLockInit(&StrategyControl->lru_buffer_strategy_lock);
+		SpinLockInit(&StrategyControl->lru_buffer_strategy_lock);
 
 		/*
 		 * Grab the whole linked list of free buffers for our strategy. We
 		 * assume it was previously set up by InitBufferPool().
 		 */
+
+		StrategyControl->headPtr = 0;
 		StrategyControl->firstFreeBuffer = 0;
 		StrategyControl->lastFreeBuffer = NBuffers - 1;
 
-        /*
-         * Initialize the lru buffers to -1, indicating no item. head lru pointer
-         * is initialized to be +1 after the last item in the lru buffer.
-         */
-        for (int i = 0; i < NBuffers; i++) {
-            StrategyControl->lruBuffers[i] = -1;
-        }
-        StrategyControl->headLruPointer = 0;
+		for(int i = 0; i < NBuffers; i++) {
+			StrategyControl->buffers[i] = -1;
+		}
 
 		/* Initialize the clock sweep pointer */
 		pg_atomic_init_u32(&StrategyControl->nextVictimBuffer, 0);
