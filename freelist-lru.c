@@ -275,8 +275,10 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state)
 	if (strategy != NULL)
 	{
 		buf = GetBufferFromRing(strategy, buf_state);
-		if (buf != NULL)
-			return buf;
+		if (buf != NULL) {
+            StrategyUpdateAccessedBuffer(buf->buf_id, false);
+            return buf;
+        }
 	}
 
 	/*
